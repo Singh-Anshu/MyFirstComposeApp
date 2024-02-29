@@ -2,6 +2,7 @@ package com.example.firstcompose.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,7 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.FormatQuote
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -25,43 +26,44 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.firstcompose.models.Quote
 
-@Preview(showSystemUi = true, showBackground = false)
 @Composable
-fun quoteListItem() {
+fun quoteListItem(quote: Quote?, onclick: () -> Unit) {
     Card(
         elevation = CardDefaults.cardElevation(10.dp),
         modifier = Modifier.padding(8.dp)
+            .clickable { onclick() }
     ) {
         Row(
             modifier = Modifier.padding(16.dp)
-        ){
+        ) {
             Image(
-                imageVector = Icons.Filled.Close,
+                imageVector = Icons.Filled.FormatQuote,
                 colorFilter = ColorFilter.tint(Color.White),
                 alignment = Alignment.TopStart,
-                contentDescription =  "Quote",
+                contentDescription = "Quote",
                 modifier = Modifier.size(40.dp)
                     .rotate(180F)
                     .background(Color.Black)
             )
             Spacer(modifier = Modifier.padding(4.dp))
-            Column( modifier = Modifier.weight(1f)) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Line is the most vlaable thing an can spend",
+                    text = quote?.text ?: "",
                     style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(0.dp, 0.dp,0.dp,8.dp)
+                    modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 8.dp)
                 )
                 Box(
                     modifier = Modifier
-                        .background(Color(0xFFEEEEEE))
+                        .background(Color(0xFFEEEEEEE))
                         .fillMaxWidth(.4f)
                         .height(1.dp)
                 )
                 Text(
-                    text = "Anshu Singh",
+                    text = quote?.author ?:  "",
                     style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(0.dp, 0.dp,0.dp,8.dp),
+                    modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 8.dp),
                     fontWeight = FontWeight.Thin
                 )
             }
@@ -69,3 +71,4 @@ fun quoteListItem() {
 
     }
 }
+

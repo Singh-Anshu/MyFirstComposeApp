@@ -53,15 +53,33 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import com.example.firstcompose.screens.QuoteListScreen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
     val TAG = "MainActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        CoroutineScope(Dispatchers.IO).launch {
+            DataManager.loadAssetFromFile(applicationContext)
+        }
         setContent {
             // My app Container
-            LayoutContainer()
+            //LayoutContainer()
+            App()
+        }
+    }
+
+    @Composable
+    fun App(){
+
+        if(DataManager.isDataLoaded.value){
+            QuoteListScreen(data = DataManager.data) {
+
+            }
         }
     }
 
