@@ -7,8 +7,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,15 +19,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,15 +57,33 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import com.example.firstcompose.screens.QuoteListScreen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
     val TAG = "MainActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        CoroutineScope(Dispatchers.IO).launch {
+            DataManager.loadAssetFromFile(applicationContext)
+        }
         setContent {
             // My app Container
-            LayoutContainer()
+            //LayoutContainer()
+            App()
+        }
+    }
+
+    @Composable
+    fun App(){
+
+        if(DataManager.isDataLoaded.value){
+            QuoteListScreen(data = DataManager.data) {
+
+            }
         }
     }
 
@@ -75,26 +103,32 @@ class MainActivity : ComponentActivity() {
                         // Do something when the activity is created
                         Log.d(TAG, "LayoutContainer: ON_CREATE")
                     }
+
                     Lifecycle.Event.ON_START -> {
                         // Do something when the activity is started
                         Log.d(TAG, "LayoutContainer: ON_START")
                     }
+
                     Lifecycle.Event.ON_RESUME -> {
                         // Do something when the activity is resumed
                         Log.d(TAG, "LayoutContainer: ON_RESUME")
                     }
+
                     Lifecycle.Event.ON_PAUSE -> {
                         // Do something when the activity is paused
                         Log.d(TAG, "LayoutContainer: ON_PAUSE")
                     }
+
                     Lifecycle.Event.ON_STOP -> {
                         // Do something when the activity is stopped
                         Log.d(TAG, "LayoutContainer: ON_STOP")
                     }
+
                     Lifecycle.Event.ON_DESTROY -> {
                         // Do something when the activity is destroyed
                         Log.d(TAG, "LayoutContainer: ON_DESTROY")
                     }
+
                     else -> {
                         Log.d(TAG, "LayoutContainer: else part")
                     }
@@ -110,34 +144,108 @@ class MainActivity : ComponentActivity() {
                 lifecycleOwner.lifecycle.removeObserver(observer)
             }
         }
+        var count = rememberSaveable { mutableStateOf(0) }
 
         Column {
             rowArrangement()
 //            columnArrangement()
-            listViewItem()
+//            listViewItem()
+            boxLayoutPreview(count.value, {count.value++})
+            previewCardLayout(count.value)
         }
     }
 
     @Composable
-    fun listViewItem(){
-        Row (
+    fun boxLayoutPreview(count: Int, increment: () -> Unit) {
+        Box(
+            modifier = Modifier.background(Color.Red)
+                .fillMaxWidth().padding(20.dp),
+            contentAlignment = Alignment.Center,
+
+            ) {
+            Column {
+
+                Text(
+                    text = "You have send ${count} Notification ",
+                    modifier = Modifier.clickable {
+                        Toast.makeText(this@MainActivity, " Text Click", Toast.LENGTH_SHORT)
+                            .show()
+                    },
+                    color = Color.White,
+                    fontSize = 20.sp
+
+                )
+
+                Button(
+                    onClick = {
+                       increment()
+                              },
+                    shape = RoundedCornerShape(12.dp),
+                    contentPadding = PaddingValues(16.dp),
+                ) {
+                    Text(
+                        "Notification Send",
+                        color = Color.White,
+                        fontSize = 16.sp
+                    )
+                }
+            }
+
+
+        }
+    }
+
+    @Composable
+    fun previewCardLayout(count: Int) {
+
+        Card(
+            elevation = CardDefaults.cardElevation(10.dp)
+        ) {
+
+            Row(
+                modifier = Modifier.padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+
+            ) {
+                Image(
+                    imageVector = Icons.Outlined.Favorite,
+                    contentDescription = "",
+                    Modifier.padding(4.dp)
+                )
+
+                Text(
+                    text = "Messages sent so far - $count ",
+                    color = Color.Black,
+                    fontSize = 20.sp
+                )
+            }
+        }
+
+
+    }
+
+    @Composable
+    fun listViewItem() {
+        Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.Top
-        ){
+        ) {
             Image(
-                painter =  painterResource(R.drawable.burger),
+                painter = painterResource(R.drawable.burger),
                 contentDescription = "Burger",
                 modifier = Modifier.size(100.dp)
-                )
-            Column( modifier = Modifier.fillMaxWidth().padding(8.dp),
-                horizontalAlignment = Alignment.Start) {
+            )
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
                 Text(
-                        text = "Anshu Singh",
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                fontSize = 24.sp,
-                textAlign = TextAlign.Start
+                    text = "Anshu Singh",
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Start
                 )
                 Text(
                     text = "Adroid Developer",
@@ -159,7 +267,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
 
     @Composable
     fun rowArrangement() {
@@ -278,8 +385,10 @@ class MainActivity : ComponentActivity() {
                 Toast.makeText(this@MainActivity, it, Toast.LENGTH_SHORT).show()
 
             },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Done),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done
+            ),
             label = { Text(text = "Full Name") },
             placeholder = { Text(text = "Enter Name") }
         )
