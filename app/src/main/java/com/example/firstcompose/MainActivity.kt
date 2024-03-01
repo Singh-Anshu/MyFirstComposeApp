@@ -32,14 +32,18 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -137,10 +141,20 @@ class MainActivity : ComponentActivity() {
                 )
                 Text(
                     text = "Adroid Developer",
-                    fontWeight = FontWeight.Light,
+                    style = TextStyle(
+                        color = Color.Blue,
+                        fontSize = 20.sp,
+                        fontFamily = FontFamily.Monospace,
+                        letterSpacing = 0.1.em,
+                        background = Color.White,
+                        textDecoration = TextDecoration.Underline,
+                        fontWeight = FontWeight.Light,
+                        textAlign = TextAlign.Start
+                    ),
+                   /* fontWeight = FontWeight.Light,
                     color = Color.Black,
-                    fontSize = 16.sp,
-                    textAlign = TextAlign.Start
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Start*/
                 )
             }
         }
