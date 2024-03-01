@@ -28,12 +28,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.firstcompose.models.Quote
 
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun quoteListItem(quote: Quote?, onclick: () -> Unit) {
+fun quoteListItem(quote: Quote?, onclick: (quote: Quote?) -> Unit) {
     Card(
         elevation = CardDefaults.cardElevation(10.dp),
         modifier = Modifier.padding(8.dp)
-            .clickable { onclick() }
+            .clickable { onclick(quote) }
     ) {
         Row(
             modifier = Modifier.padding(16.dp)

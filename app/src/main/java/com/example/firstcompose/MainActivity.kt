@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.example.firstcompose.screens.QuoteListScreen
+import com.example.firstcompose.screens.quoteDetail
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -77,10 +78,20 @@ class MainActivity : ComponentActivity() {
     fun App(){
 
         if(DataManager.isDataLoaded.value){
-            QuoteListScreen(data = DataManager.data) {
 
+            if(DataManager.currentPages.value == Pages.LISTING) {
+                QuoteListScreen(data = DataManager.data) { it ->
+                    DataManager.switchPages(it)
+                }
+            }else{
+                quoteDetail(DataManager.currentQuote)
             }
         }
+    }
+
+    enum class Pages{
+        LISTING,
+        DETAILS
     }
 
 
